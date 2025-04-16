@@ -64,12 +64,12 @@ try {
 
             // Verify password
             // Hash the password
-            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            // $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-            if ($passwordHash == $user['password']) {
+            if ($user['password_hash'] && password_verify($password, $user['password_hash'])) {
                 // Set session variables
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
+                $_SESSION['user_name'] = $user['first_name'];
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_role'] = $user['role'];
                 $_SESSION['isLoggedIn'] = true;
@@ -96,7 +96,7 @@ try {
 
                 // Prepare successful response
                 $response['success'] = true;
-                $response['message'] = 'Login successful! Redirecting to dashboard...';
+                $response['message'] = 'Login successful! Redirecting to dashboard... '.$passwordHash.' '.$user['password_hash'];
 
                 // Set redirect based on user role
                 if ($user['role'] === 'admin') {

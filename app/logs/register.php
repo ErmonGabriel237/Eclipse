@@ -1,4 +1,20 @@
 <!-- filepath: c:\xampp\htdocs\Eclipse\register.php -->
+<?php
+    if(session_status() === PHP_SESSION_NONE){
+        session_start();
+    }
+
+    if(isset($_SESSION['user_id']) && isset($_SESSION['isLoggedIn'])){
+        switch($_SESSION['role']){
+            case 'admin':
+                // code:
+                break;
+            default:
+                header("Location: ../../index.php");
+                break;
+        }
+    }
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

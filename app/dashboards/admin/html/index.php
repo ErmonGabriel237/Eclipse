@@ -4,12 +4,13 @@ if (!isset($_SESSION['success']) && ($_SESSION['userType']) != 'admin') {
   header('Location: ./authentication-login.php');
 }
 
-function countCourse(){
+function countCourse()
+{
   // include_once '../server/config.php';
   // $sql = "SELECT COUNT(*) AS courseCount FROM user WHERE userType = 'trainer'";
   // $data = $conn->query($sql);
   // $row = $data->fetch_assoc();
-  
+
   // echo $row['courseCount'];  
 }
 ?>
@@ -34,7 +35,10 @@ function countCourse(){
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
           <a href="./index.php" class="text-nowrap logo-img">
-            <img src="../assets/images/logos/dark-logo.svg" width="180" alt="" />
+            <div class="logo bold">
+              <h1>Learn<span class="text-primary">Hub</span></h1>
+            </div>
+            <!-- <img src="../assets/images/logos/dark-logo.svg" width="180" alt="" /> -->
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i class="ti ti-x fs-8"></i>
@@ -70,91 +74,35 @@ function countCourse(){
             <li class="sidebar-item">
               <a class="sidebar-link" href="./account.php" aria-expanded="false">
                 <span>
+                  <i class="ti ti-tag"></i>
+                </span>
+                <span class="hide-menu">Category</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./account.php" aria-expanded="false">
+                <span>
                   <i class="ti ti-book"></i>
                 </span>
                 <span class="hide-menu">Courses</span>
               </a>
             </li>
-            <!-- <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-buttons.html" aria-expanded="false">
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./account.php" aria-expanded="false">
                 <span>
-                  <i class="ti ti-article"></i>
+                  <i class="ti ti-clipboard"></i>
                 </span>
-                <span class="hide-menu">Buttons</span>
+                <span class="hide-menu">Report</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
+              <a class="sidebar-link" href="./account.php" aria-expanded="false">
                 <span>
-                  <i class="ti ti-alert-circle"></i>
+                  <i class="ti ti-wrench"></i>
                 </span>
-                <span class="hide-menu">Alerts</span>
+                <span class="hide-menu">Setting</span>
               </a>
             </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-cards"></i>
-                </span>
-                <span class="hide-menu">Card</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-forms.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-file-description"></i>
-                </span>
-                <span class="hide-menu">Forms</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-typography.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-typography"></i>
-                </span>
-                <span class="hide-menu">Typography</span>
-              </a>
-            </li>
-            <li class="nav-small-cap">
-              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">AUTH</span>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-login"></i>
-                </span>
-                <span class="hide-menu">Login</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-user-plus"></i>
-                </span>
-                <span class="hide-menu">Register</span>
-              </a>
-            </li>
-            <li class="nav-small-cap">
-              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">EXTRA</span>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-mood-happy"></i>
-                </span>
-                <span class="hide-menu">Icons</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./sample-page.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-aperture"></i>
-                </span>
-                <span class="hide-menu">Sample Page</span>
-              </a>
-            </li> -->
           </ul>
         </nav>
         <!-- End Sidebar navigation -->
@@ -213,7 +161,7 @@ function countCourse(){
       <!--  Header End -->
       <div class="container-fluid">
         <div class="row">
-        <div class="col-md-3">
+          <div class="col-md-3">
             <!-- <h5 class="card-title fw-semibold mb-3">Titles, text, and links</h5> -->
             <div class="card">
               <div class="card-body">
@@ -249,8 +197,8 @@ function countCourse(){
             <!-- <h5 class="card-title fw-semibold mb-3">Titles, text, and links</h5> -->
             <div class="card">
               <div class="card-body">
-              <h5 class="card-title" id="trainerCount"></h5>
-              <h5 class="card-title" id="errorTrainerMessage"></h5>
+                <h5 class="card-title" id="trainerCount"></h5>
+                <h5 class="card-title" id="errorTrainerMessage"></h5>
                 <h6 class="card-subtitle mb-2 text-muted">Trainers</h6>
                 <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of
                           the

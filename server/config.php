@@ -30,7 +30,7 @@ if ($dev_environment) {
 // For production, consider using environment variables instead of hardcoded values
 return [
     'host'     => getenv('DB_HOST') ?: 'localhost',
-    'dbname'   => getenv('DB_NAME') ?: 'fitness',
+    'dbname'   => getenv('DB_NAME') ?: 'elearning',
     'username' => getenv('DB_USER') ?: 'root',
     'password' => getenv('DB_PASS') ?: '',
     'charset'  => 'utf8mb4',

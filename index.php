@@ -1,3 +1,11 @@
+<?php
+    if(session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    $isLoggedIn = isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] === true;
+    $username = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,10 +36,17 @@
                 <li><a href="./about.php">About</a></li>
                 <li><a href="./contact.php">Contact</a></li>
             </ul>
-            <div class="auth-buttons">
-                <button class="btn login-btn">Log In</button>
-                <button class="btn signup-btn">Sign Up</button>
-            </div>
+            <?php if (!$isLoggedIn) :?>
+                <div class="auth-buttons">
+                    <button class="btn login-btn">Log In</button>
+                    <button class="btn signup-btn">Sign Up</button>
+                </div>
+            <?php else: ?>
+                <div class="auth-buttons">
+                    <button class="btn">DashBoard</button>
+                    <button class="btn signup-btn"><?php echo $_SESSION['user_name'];?>></button>
+                </div>
+            <?php endif;?>
             <div class="burger">
                 <div class="line1"></div>
                 <div class="line2"></div>
@@ -52,8 +67,9 @@
                     <button class="btn secondary-btn">Browse Courses</button>
                 </div>
             </div>
-            <div class="hero-image animate__animated animate__fadeIn animate__delay-1s">
-                <img src="/api/placeholder/500/400" alt="Students learning online">
+            <!-- animate__animated animate__fadeIn animate__delay-1s -->
+            <div class="hero-image">
+                <img src="./assets/img/hero/hero.png" alt="Students learning online">
             </div>
         </section>
 

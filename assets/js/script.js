@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         loginBtn.addEventListener('click', () => window.location.href = './app/logs/login.php');
-        signupBtn.addEventListener('click', () => showModal('signup'));
+        signupBtn.addEventListener('click', () => window.location.href = './app/logs/register.php');
     }
 
     // Course card hover effects

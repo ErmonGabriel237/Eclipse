@@ -26,7 +26,7 @@
             <div class="register-container">
                 <h2>Create Your Account</h2>
                 <p>Join LearnHub and start your learning journey today.</p>
-                <form class="register-form" enctype="multipart/form-data">
+                <form class="register-form" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" id="email" placeholder="Enter your email" required>
@@ -71,5 +71,6 @@
         </section>
     </div>
     <script src="../../assets/js/script.js"></script>
+    <script src="../../server/js/register.js"></script>
 </body>
 </html>

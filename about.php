@@ -15,8 +15,7 @@
         <p>Loading LearnHub...</p>
     </div>
 
-    <!-- Main Content -->
-    <div id="content" style="display: none;">
+    <!-- Main Content -->  
         <!-- Navigation -->
         <nav>
             <div class="logo">

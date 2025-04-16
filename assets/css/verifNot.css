@@ -1,0 +1,96 @@
+/* Notification Container Styles */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 300px;
+    max-width: 90%;
+}
+
+.notification {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    border-left: 4px solid #333;
+}
+
+.notification.success {
+    border-left-color: #4CAF50;
+}
+
+.notification.error {
+    border-left-color: #F44336;
+}
+
+.notification.warning {
+    border-left-color: #FF9800;
+}
+
+.notification.info {
+    border-left-color: #2196F3;
+}
+
+.notification i {
+    font-size: 20px;
+    margin-right: 12px;
+}
+
+.notification.success i {
+    color: #4CAF50;
+}
+
+.notification.error i {
+    color: #F44336;
+}
+
+.notification.warning i {
+    color: #FF9800;
+}
+
+.notification.info i {
+    color: #2196F3;
+}
+
+.notification p {
+    margin: 0;
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+}
+
+/* Animation classes for use with animate.css */
+.notification.animate__fadeIn {
+    animation-duration: 0.5s;
+}
+
+.notification.animate__fadeOut {
+    animation-duration: 0.5s;
+}
+
+/* For smaller screens */
+@media (max-width: 480px) {
+    .notification-container {
+        width: calc(100% - 40px);
+        right: 20px;
+    }
+    
+    .notification {
+        padding: 12px;
+    }
+    
+    .notification i {
+        font-size: 18px;
+    }
+    
+    .notification p {
+        font-size: 13px;
+    }
+}

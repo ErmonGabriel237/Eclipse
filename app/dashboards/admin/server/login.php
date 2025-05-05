@@ -1,7 +1,7 @@
 <?php
 // Database configuration
 $host = 'localhost';
-$db   = 'fitness';
+$db   = 'elearning';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';

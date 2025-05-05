@@ -30,9 +30,13 @@
 </head>
 <body>
     <!-- Loader -->
-    <div id="loader">
-        <div class="spinner"></div>
-        <p>Loading LearnHub...</p>
+    <div id="preloader" id="loader">
+        <div class="loader">
+            <svg viewBox="0 0 80 80">
+                <circle id="test" cx="40" cy="40" r="32"></circle>
+            </svg>
+        </div>
+        <div class="loader-text">Login to LearnHub</div>
     </div>
 
     <!-- Back to Home Button -->
@@ -68,7 +72,6 @@
         </section>
     </div>
     <script src="../../assets/js/script.js"></script>
-
     <script src="../../server/js/login.js"></script>
 </body>
 </html>

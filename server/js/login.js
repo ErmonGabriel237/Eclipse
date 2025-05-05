@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             // Hide loader
-            document.getElementById('loader').style.display = 'none';
+            document.getElementById('preloader').style.display = 'none';
             document.getElementById('content').style.display = 'block';
             
             if (data.success) {

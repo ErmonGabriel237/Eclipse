@@ -50,7 +50,7 @@
                 </div>
             <?php else: ?>
                 <div class="auth-buttons">
-                    <a href="app/dashboards/dashboard.php" class="btn dashboard-btn glass-effect">
+                    <a href="./app/dashboards/admin/html/index.php" class="btn dashboard-btn glass-effect">
                         <i class="fas fa-columns"></i> Dashboard
                     </a>
                     <div class="user-profile">

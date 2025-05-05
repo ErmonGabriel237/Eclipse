@@ -1,178 +1,170 @@
 <?php
-/**
- * User Registration API
- * 
- * Handles new user registration with validation and image upload
- */
-
-// Define constant to allow config file inclusion
-define('AUTHORIZED_ACCESS', true);
-
-// Start session if not already started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Set header to return JSON
 header('Content-Type: application/json');
+define('AUTHORIZED_ACCESS', true);
+$config = require_once '../config.php';
 
-// Only allow POST requests
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
-    exit;
+function validateInput($data) {
+    return htmlspecialchars(strip_tags(trim($data)));
 }
 
 try {
-    // Load database configuration
-    $config = require_once __DIR__ . '/../config.php';
-    
-    // Define constants for role IDs
-    define('ROLE_STUDENT', 1);
-    
-    // Create PDO connection
-    $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
-    $pdo = new PDO($dsn, $config['username'], $config['password'], $config['options']);
-    
-    // Get and sanitize form data
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $firstName = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $lastName = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $gender = filter_input(INPUT_POST, 'gender', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    // Check if request method is POST
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception('Invalid request method');
+    }
 
-    // Additional sanitization for strings
-    $firstName = htmlspecialchars(trim($firstName), ENT_QUOTES, 'UTF-8');
-    $lastName = htmlspecialchars(trim($lastName), ENT_QUOTES, 'UTF-8');
-    $phone = htmlspecialchars(trim($phone), ENT_QUOTES, 'UTF-8');
-    $gender = htmlspecialchars(trim($gender), ENT_QUOTES, 'UTF-8');
-    $password = $_POST['password'] ?? '';
-    $confirmPassword = $_POST['confirmPassword'] ?? '';
+    // Validate input fields
+    $required_fields = ['email', 'password', 'first_name', 'last_name', 'phone_number', 'gender', 'role'];
+    $sanitized_input = [];
     
-    // Validation
-    $errors = [];
-    
-    // Email validation
-    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'Please enter a valid email address';
-    }
-    
-    // Check if email already exists
-    $stmt = $pdo->prepare('SELECT COUNT(*) FROM users WHERE email = ?');
-    $stmt->execute([$email]);
-    if ($stmt->fetchColumn() > 0) {
-        $errors[] = 'Email address is already registered';
-    }
-    
-    // Name validation
-    if (empty($firstName) || strlen($firstName) < 2) {
-        $errors[] = 'First name must be at least 2 characters';
-    }
-    
-    if (empty($lastName) || strlen($lastName) < 2) {
-        $errors[] = 'Last name must be at least 2 characters';
-    }
-    
-    // Phone validation (basic format check)
-    if (empty($phone) || !preg_match('/^[0-9+\-\s()]{6,20}$/', $phone)) {
-        $errors[] = 'Please enter a valid phone number';
-    }
-    
-    // Gender validation
-    if (empty($gender) || !in_array($gender, ['male', 'female', 'other'])) {
-        $errors[] = 'Please select a valid gender';
-    }
-    
-    // Password validation
-    if (empty($password) || strlen($password) < 8) {
-        $errors[] = 'Password must be at least 8 characters';
-    }
-    
-    if ($password !== $confirmPassword) {
-        $errors[] = 'Passwords do not match';
-    }
-    
-    // Profile picture validation and upload
-    $profilePicturePath = null;
-    if (isset($_FILES['profilePicture']) && $_FILES['profilePicture']['error'] === UPLOAD_ERR_OK) {
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        $fileType = $_FILES['profilePicture']['type'];
-        
-        if (!in_array($fileType, $allowedTypes)) {
-            $errors[] = 'Profile picture must be a JPG, PNG, or GIF image';
-        } else {
-            // Create uploads directory if it doesn't exist
-            $uploadDir = '../../assets/uploads/profile_pictures/';
-            if (!is_dir($uploadDir) && !@mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $uploadDir));
-            }
-            
-            // Generate a unique filename
-            $filename = uniqid('profile_') . '_' . basename($_FILES['profilePicture']['name']);
-            $uploadPath = $uploadDir . $filename;
-            
-            // Move the uploaded file
-            if (move_uploaded_file($_FILES['profilePicture']['tmp_name'], $uploadPath)) {
-                $profilePicturePath =  $filename;
-            } else {
-                $errors[] = 'Failed to upload profile picture';
-            }
+    foreach ($required_fields as $field) {
+        if (!isset($_POST[$field]) || empty($_POST[$field])) {
+            throw new Exception("Field '$field' is required");
         }
-    } else {
-        $errors[] = 'Profile picture is required';
+        $sanitized_input[$field] = validateInput($_POST[$field]);
     }
-    
-    // If there are validation errors, return them
-    if (!empty($errors)) {
-        echo json_encode(['status' => 'error', 'message' => 'Validation failed', 'errors' => $errors]);
-        exit;
+
+    // Validate email format
+    if (!filter_var($sanitized_input['email'], FILTER_VALIDATE_EMAIL)) {
+        throw new Exception('Invalid email format');
     }
-    
-    // Hash the password
-    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-    
+
+    // Validate password strength
+    if (strlen($sanitized_input['password']) < 8) {
+        throw new Exception('Password must be at least 8 characters long');
+    }
+
+    // Validate phone number format
+    if (!preg_match('/^[0-9+\-\s()]{8,20}$/', $sanitized_input['phone_number'])) {
+        throw new Exception('Invalid phone number format');
+    }
+
+    // Validate gender
+    $allowed_genders = ['male', 'female', 'other'];
+    if (!in_array(strtolower($sanitized_input['gender']), $allowed_genders)) {
+        throw new Exception('Invalid gender value');
+    }
+
+    // Handle profile picture upload
+    $profile_picture = null;
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === 0) {
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+        $max_size = 5 * 1024 * 1024; // 5MB
+        
+        // Validate file type using mime type
+        $file_info = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($file_info, $_FILES['profile_picture']['tmp_name']);
+        finfo_close($file_info);
+
+        if (!in_array($mime_type, $allowed_types)) {
+            throw new Exception('Invalid file type. Only JPG, PNG and GIF are allowed');
+        }
+
+        if ($_FILES['profile_picture']['size'] > $max_size) {
+            throw new Exception('File size too large. Maximum size is 5MB');
+        }
+
+        // Create upload directory if it doesn't exist
+        $upload_dir = '../uploads/profiles/';
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+
+        // Generate safe filename
+        $ext = pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION);
+        $upload_name = bin2hex(random_bytes(16)) . '.' . $ext;
+        $upload_path = $upload_dir . $upload_name;
+        
+        if (!move_uploaded_file($_FILES['profile_picture']['tmp_name'], $upload_path)) {
+            throw new Exception('Failed to upload image');
+        }
+        
+        $profile_picture = $upload_name;
+    }
+
+    $pdo = new PDO(
+        "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}", 
+        $config['username'], 
+        $config['password'], 
+        $config['options']
+    );
+
+    // Hash password with strong algorithm
+    $password_hash = password_hash($sanitized_input['password'], PASSWORD_ARGON2ID);
+
     // Begin transaction
     $pdo->beginTransaction();
-    
-    // Insert user data
-    $stmt = $pdo->prepare('INSERT INTO users (email, password_hash, first_name, last_name, phone_number, gender, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)');
-    // $stmt->execute([$userId, ROLE_STUDENT]); // Use constant for student role ID
-    $stmt->execute([$email, $passwordHash, $firstName, $lastName, $phone, $gender, $profilePicturePath]);
-    $userId = $pdo->lastInsertId();
-    
-    // Assign default student role
-    $stmt = $pdo->prepare('INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)');
-    $stmt->execute([$userId, 1]); // Role ID 1 is 'student' based on seed data
-    
-    // Create user_profile entry (assuming there's a user_profile table for additional info)
-    // This part is optional and depends on your database structure
-    // $stmt = $pdo->prepare('INSERT INTO user_profile (user_id, phone, gender) VALUES (?, ?, ?)');
-    // $stmt->execute([$userId, $phone, $gender]);
-    
-    // Commit the transaction
-    $pdo->commit();
-    
-    // Return success response
-    echo json_encode([
-        'status' => 'success',
-        'message' => 'Registration successful! Please check your email to activate your account.',
-        'redirect' => './login.php'
-    ]);
-    
-} catch (PDOException $e) {
-    // Roll back transaction on error
-    if (isset($pdo) && $pdo->inTransaction()) {
+
+    try {
+        // Check if email already exists
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->execute([$sanitized_input['email']]);
+        if ($stmt->fetchColumn()) {
+            throw new Exception('Email already exists');
+        }
+
+        // Verify role exists
+        $stmt = $pdo->prepare("SELECT id FROM roles WHERE id = ?");
+        $stmt->execute([$sanitized_input['role']]);
+        if (!$stmt->fetch()) {
+            throw new Exception('Invalid role selected');
+        }
+
+        // Insert user
+        $sql = "INSERT INTO users (
+            email, password_hash, first_name, last_name, 
+            phone_number, gender, profile_picture, status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'inactive')";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            $sanitized_input['email'],
+            $password_hash,
+            $sanitized_input['first_name'],
+            $sanitized_input['last_name'],
+            $sanitized_input['phone_number'],
+            strtolower($sanitized_input['gender']),
+            $profile_picture
+        ]);
+
+        $user_id = $pdo->lastInsertId();
+
+        // Assign role to user
+        $sql = "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$user_id, $sanitized_input['role']]);
+
+        // Commit transaction
+        $pdo->commit();
+
+        // Log successful registration
+        error_log("New user registered: {$sanitized_input['email']} with role {$sanitized_input['role']}");
+
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Registration successful! Please wait for admin approval.'
+        ]);
+        
+    } catch (Exception $e) {
         $pdo->rollBack();
+        throw $e;
     }
     
-    // Log the error (in production, consider using a proper logging system)
-    error_log('Registration Error: ' . $e->getMessage());
-    
-    // Return error message
-    echo json_encode(['status' => 'error', 'message' => 'Registration failed. Please try again later.']);
+} catch (PDOException $e) {
+    error_log("Database Error: " . $e->getMessage());
+    echo json_encode([
+        'success' => false, 
+        'message' => 'A database error occurred. Please try again later.'
+    ]);
 } catch (Exception $e) {
-    // Generic error handling
-    error_log('System Error: ' . $e->getMessage());
-    echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred.']);
+    echo json_encode([
+        'success' => false, 
+        'message' => $e->getMessage()
+    ]);
+} finally {
+    // Clean up any temporary files if registration failed
+    if (isset($upload_path) && file_exists($upload_path) && 
+        (isset($pdo) && !$pdo->inTransaction())) {
+        unlink($upload_path);
+    }
 }
-?>

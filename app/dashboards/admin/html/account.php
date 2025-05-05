@@ -85,7 +85,7 @@ if (!isset($_SESSION['csrf_token'])) {
         </div>
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-          <ul id="sidebarnav">
+        <ul id="sidebarnav">
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
               <span class="hide-menu">Home</span>
@@ -111,11 +111,43 @@ if (!isset($_SESSION['csrf_token'])) {
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./course.php" aria-expanded="false">
+              <a class="sidebar-link" href="../account.php" aria-expanded="false">
+                <span>
+                  <i class="ti ti-tag"></i>
+                </span>
+                <span class="hide-menu">Category</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="../account.php" aria-expanded="false">
                 <span>
                   <i class="ti ti-book"></i>
                 </span>
                 <span class="hide-menu">Courses</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="../account.php" aria-expanded="false">
+                <span>
+                  <i class="ti ti-clipboard"></i>
+                </span>
+                <span class="hide-menu">Report</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./message/chats.php" aria-expanded="false">
+                <span>
+                  <i class="ti ti-message"></i>
+                </span>
+                <span class="hide-menu">Discussion</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="../account.php" aria-expanded="false">
+                <span>
+                  <i class="ti ti-wrench"></i>
+                </span>
+                <span class="hide-menu">Setting</span>
               </a>
             </li>
           </ul>

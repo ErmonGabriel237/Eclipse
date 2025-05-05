@@ -100,7 +100,7 @@ try {
 
                 // Set redirect based on user role
                 if ($user['role'] === 'admin') {
-                    $response['redirect'] = 'admin/dashboard.php';
+                    $response['redirect'] = 'admin/html/index.php';
                 } else if ($user['role'] === 'instructor') {
                     $response['redirect'] = 'instructor/dashboard.php';
                 } else {

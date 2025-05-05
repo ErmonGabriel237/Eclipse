@@ -46,7 +46,7 @@ function countCourse()
         </div>
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
-          <ul id="sidebarnav">
+        <ul id="sidebarnav">
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
               <span class="hide-menu">Home</span>
@@ -93,6 +93,14 @@ function countCourse()
                   <i class="ti ti-clipboard"></i>
                 </span>
                 <span class="hide-menu">Report</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="./message/chats.php" aria-expanded="false">
+                <span>
+                  <i class="ti ti-message"></i>
+                </span>
+                <span class="hide-menu">Discussion</span>
               </a>
             </li>
             <li class="sidebar-item">
